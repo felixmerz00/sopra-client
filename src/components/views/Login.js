@@ -62,6 +62,9 @@ const Login = props => {
     <BaseContainer>
       <div className="login container">
         <div className="login form">
+          <h2 className="login header">
+            Login
+          </h2>
           <FormField
             label="Username"
             value={username}
@@ -81,6 +84,7 @@ const Login = props => {
               Login
             </Button>
           </div>
+          <a href="URL">clickable text</a>
         </div>
       </div>
     </BaseContainer>
