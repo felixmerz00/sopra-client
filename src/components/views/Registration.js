@@ -15,13 +15,13 @@ specific components that belong to the main one in the same file.
  */
 const FormField = props => {
     return (
-        <div className="login field">
-            <label className="login label">
+        <div className="registration field">
+            <label className="registration label">
                 {props.label}
             </label>
             <input
-                className="login input"
-                placeholder="enter here..         fldöas"
+                className="registration input"
+                placeholder="enter here.."
                 value={props.value}
                 onChange={e => props.onChange(e.target.value)}
             />
@@ -35,12 +35,12 @@ FormField.propTypes = {
     onChange: PropTypes.func
 };
 
-const Login = props => {
+const Registration = props => {
     const history = useHistory();
     const [name, setName] = useState(null);
     const [username, setUsername] = useState(null);
 
-    const doLogin = async () => {
+    const doRegistration = async () => {
         try {
             const requestBody = JSON.stringify({username, name});
             const response = await api.post('/users', requestBody);
@@ -51,17 +51,17 @@ const Login = props => {
             // Store the token into the local storage.
             localStorage.setItem('token', user.token);
 
-            // Login successfully worked --> navigate to the route /game in the GameRouter
+            // Registration successfully worked --> navigate to the route /game in the GameRouter
             history.push(`/game`);
         } catch (error) {
-            alert(`Something went wrong during the login: \n${handleError(error)}`);
+            alert(`Something went wrong during the registration: \n${handleError(error)}`);
         }
     };
 
     return (
         <BaseContainer>
-            <div className="login container">
-                <div className="login form">
+            <div className="registration container">
+                <div className="registration form">
                     <h2 className="registration header">
                         Registration
                     </h2>
@@ -75,13 +75,13 @@ const Login = props => {
                         value={name}
                         onChange={n => setName(n)}
                     />
-                    <div className="login button-container">
+                    <div className="registration button-container">
                         <Button
                             disabled={!username || !name}
                             width="100%"
-                            onClick={() => doLogin()}
+                            onClick={() => doRegistration()}
                         >
-                            Login
+                            Register
                         </Button>
                     </div>
                 </div>
@@ -94,4 +94,4 @@ const Login = props => {
  * You can get access to the history object's properties via the withRouter.
  * withRouter will pass updated match, location, and history props to the wrapped component whenever it renders.
  */
-export default Login;
+export default Registration;
