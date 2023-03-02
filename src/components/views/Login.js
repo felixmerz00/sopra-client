@@ -107,7 +107,7 @@ const Login = props => {
               Login
             </Button>
           </div>
-          <a href="/register">clickable text</a>
+          <a href="/register">Register</a>
         </div>
       </div>
     </BaseContainer>
