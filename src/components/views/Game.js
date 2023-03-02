@@ -9,7 +9,7 @@ import "styles/views/Game.scss";
 
 const Player = ({user}) => (
   <div className="player container">
-    <div className="player username">{user.username}</div>
+    <div className="player username"><a href="/profile">{user.username}</a></div>
     <div className="player name">{user.name}</div>
     <div className="player id">id: {user.id}</div>
   </div>
