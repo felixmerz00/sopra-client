@@ -64,7 +64,7 @@ const Registration = props => {
 
     const doRegistration = async () => {
         try {
-            const requestBody = JSON.stringify({username, name: password});
+            const requestBody = JSON.stringify({username, password: password});
             const response = await api.post('/users', requestBody);
 
             // Get the returned user and update a new object.
