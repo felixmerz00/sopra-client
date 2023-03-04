@@ -64,11 +64,12 @@ const Login = props => {
 
   const doLogin = async () => {
     try {
-      // TODO Change the name to password. Where to does it send the data here?
+      // TODO Change the name to password.
       const requestBody = JSON.stringify({username, name: password});
-      const response = await api.post('/users', requestBody);
+      const response = await api.post('/user-logins', requestBody);
 
       // Get the returned user and update a new object.
+        // TODO Why is it creating a new user here? What is this User.js class?
       const user = new User(response.data);
 
       // Store the token into the local storage.
