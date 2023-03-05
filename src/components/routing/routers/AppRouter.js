@@ -7,6 +7,7 @@ import {RegistrationGuard} from "../routeProtectors/RegisterationGuard";
 import Registration from "../../views/Registration";
 import {ProfileGuard} from "../routeProtectors/ProfileGuard";
 import Profile from "../../views/Profile";
+import UserProfile from "../../views/UserProfile";
 
 /**
  * Main router of your application.
@@ -39,11 +40,7 @@ const AppRouter = () => {
             <Registration/>
           </RegistrationGuard>
         </Route>
-        <Route exact path="/profile">
-          <ProfileGuard>
-            <Profile/>
-          </ProfileGuard>
-        </Route>
+        <Route exact path='/profile/:id' component={UserProfile} />
       </Switch>
     </BrowserRouter>
   );

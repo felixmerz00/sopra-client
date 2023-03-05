@@ -69,7 +69,7 @@ const Login = props => {
       const response = await api.post('/user-logins', requestBody);
 
       // Get the returned user and update a new object.
-        // TODO Why is it creating a new user here? What is this User.js class?
+        // TODO Why is it creating a new user here? What is this UserProfile.js class?
       const user = new User(response.data);
 
       // Store the token into the local storage.
