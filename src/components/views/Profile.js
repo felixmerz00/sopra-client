@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {api, handleError} from 'helpers/api';
 import User from 'models/User';
 import {useHistory} from 'react-router-dom';
-import {Button} from 'components/ui/Button';
 import 'styles/views/Registration.scss';
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
@@ -58,27 +57,6 @@ PasswordField.propTypes = {
 };
 
 const Profile = props => {
-    const history = useHistory();
-    const [password, setPassword] = useState(null);
-    const [username, setUsername] = useState(null);
-
-    const doRegistration = async () => {
-        try {
-            const requestBody = JSON.stringify({username, name: password});
-            const response = await api.post('/users', requestBody);
-
-            // Get the returned user and update a new object.
-            const user = new User(response.data);
-
-            // Store the token into the local storage.
-            localStorage.setItem('token', user.token);
-
-            // Registration successfully worked --> navigate to the route /game in the GameRouter
-            history.push(`/game`);
-        } catch (error) {
-            alert(`Something went wrong during the registration: \n${handleError(error)}`);
-        }
-    };
 
     return (
         <BaseContainer>
