@@ -80,6 +80,7 @@ const Registration = props => {
         }
     };
 
+
     return (
         <BaseContainer>
             <div className="registration container">
