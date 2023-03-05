@@ -1,13 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {api, handleError} from 'helpers/api';
-import {Link, useHistory} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/UserProfile.scss";
 
 
 const UserProfile = () => {
-    // use react-router-dom's hook to access the history
-    const history = useHistory();
 
     // define a state variable (using the state hook).
     // if this variable changes, the component will re-render, but the variable will
@@ -27,7 +25,7 @@ const UserProfile = () => {
 
                 const url = "/profiles?id=" + window.location.href.slice(-1);
                 const response = await api.get(url);
-/*
+
                 // Get the returned user and update the state.
                 setUsers(response.data);
 
@@ -38,10 +36,12 @@ const UserProfile = () => {
                 console.log('status text:', response.statusText);
                 console.log('requested data:', response.data);
 
+                // This line only exists to have a use for users and I can push it on GitHub.
+                console.log(users);
+
                 // See here to get more data.
                 console.log(response);
 
-                 */
             } catch (error) {
                 console.error(`Something went wrong while fetching the users: \n${handleError(error)}`);
                 console.error("Details:", error);

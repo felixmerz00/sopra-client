@@ -6,7 +6,6 @@ import Login from "components/views/Login";
 import {RegistrationGuard} from "../routeProtectors/RegisterationGuard";
 import Registration from "../../views/Registration";
 import {ProfileGuard} from "../routeProtectors/ProfileGuard";
-import Profile from "../../views/Profile";
 import UserProfile from "../../views/UserProfile";
 
 /**
@@ -40,7 +39,11 @@ const AppRouter = () => {
             <Registration/>
           </RegistrationGuard>
         </Route>
-        <Route exact path='/profile/:id' component={UserProfile} />
+        <Route exact path='/profile/:id'>
+          <ProfileGuard>
+            <UserProfile/>
+          </ProfileGuard>
+        </Route>
       </Switch>
     </BrowserRouter>
   );
