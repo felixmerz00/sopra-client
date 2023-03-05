@@ -1,5 +1,5 @@
 /**
- * User model
+ * UserProfile model
  */
 class User {
   constructor(data = {}) {

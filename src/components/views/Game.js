@@ -2,14 +2,16 @@ import {useEffect, useState} from 'react';
 import {api, handleError} from 'helpers/api';
 import {Spinner} from 'components/ui/Spinner';
 import {Button} from 'components/ui/Button';
-import {useHistory} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 
 const Player = ({user}) => (
   <div className="player container">
-    <div className="player username"><a href="/profile">{user.username}</a></div>
+    <div className="player username">
+        <Link to={`/profile/${user.id}`}>{user.username}</Link>
+    </div>
     <div className="player name">{user.password}</div>
     <div className="player id">id: {user.id}</div>
   </div>
