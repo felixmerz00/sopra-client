@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {api, handleError} from 'helpers/api';
-import {useHistory} from 'react-router-dom';
 import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/UserProfile.scss";
 
@@ -50,7 +49,7 @@ const UserProfile = () => {
         }
 
         fetchData();
-    }, []);
+    });
 
     return (
         <BaseContainer>
