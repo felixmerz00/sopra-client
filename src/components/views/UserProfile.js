@@ -24,8 +24,10 @@ const UserProfile = () => {
         // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
         async function fetchData() {
             try {
-                const response = await api.get('/user-profiles');
 
+                const url = "/profiles?id=" + window.location.href.slice(-1);
+                const response = await api.get(url);
+/*
                 // Get the returned user and update the state.
                 setUsers(response.data);
 
@@ -38,6 +40,8 @@ const UserProfile = () => {
 
                 // See here to get more data.
                 console.log(response);
+
+                 */
             } catch (error) {
                 console.error(`Something went wrong while fetching the users: \n${handleError(error)}`);
                 console.error("Details:", error);
