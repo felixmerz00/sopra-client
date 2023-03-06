@@ -23,7 +23,7 @@ const UserProfile = () => {
         async function fetchData() {
             try {
 
-                const url = "/profiles?id=" + window.location.href.slice(-1);
+                const url = "/users/" + window.location.href.slice(-1);
                 const response = await api.get(url);
 
                 console.log(response);
