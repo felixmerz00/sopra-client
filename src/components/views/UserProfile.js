@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {api, handleError} from 'helpers/api';
 import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/UserProfile.scss";
+import {Button} from "../ui/Button";
 
 
 const UserProfile = () => {
@@ -11,7 +12,7 @@ const UserProfile = () => {
     // keep its value throughout render cycles.
     // a component can have as many state variables as you like.
     // more information can be found under https://reactjs.org/docs/hooks-state.html
-    const [users, setUsers] = useState(null);
+    const [user, setUser] = useState(null);
 
     // the effect hook can be used to react to change in your component.
     // in this case, the effect hook is only run once, the first time the component is mounted
@@ -25,8 +26,12 @@ const UserProfile = () => {
                 const url = "/profiles?id=" + window.location.href.slice(-1);
                 const response = await api.get(url);
 
+                console.log(response);
+
                 // Get the returned user and update the state.
-                setUsers(response.data);
+                setUser(response.data);
+
+                console.log(user);
 
                 // This is just some data for you to see what is available.
                 // Feel free to remove it.
@@ -35,8 +40,6 @@ const UserProfile = () => {
                 console.log('status text:', response.statusText);
                 console.log('requested data:', response.data);
 
-                // This line only exists to have a use for users and I can push it on GitHub.
-                console.log(users);
 
                 // See here to get more data.
                 console.log(response);
@@ -49,17 +52,34 @@ const UserProfile = () => {
         }
 
         fetchData();
-    });
+    }, []);
+
+    let content = <div></div>;
+    if(user) {
+        content = (
+            <div className="profile">
+                <ul className="profile item-list">
+                    <div className="profile item">{user.username}</div>
+                    <div className="profile item">{user.status}</div>
+                    <div className="profile item">{user.creationDate}</div>
+                    <div className="profile item">{user.birthday}</div>
+                </ul>
+                <Button
+                    width="100%"
+                >
+                    Confirm Edits
+                </Button>
+            </div>
+        );
+    }
 
     return (
-        <BaseContainer>
-            <div className="profile container">
-                <div className="profile form">
-                    <h2 className="login header">
-                        User Profile
-                    </h2>
-                    <p>Hello World</p>
-                </div>
+        <BaseContainer className="profile container">
+            <div className="profile form">
+                <h2 className="login header">
+                    User Profile
+                </h2>
+                {content}
             </div>
         </BaseContainer>
     );
