@@ -31,7 +31,9 @@ const UserProfile = () => {
                 // Get the returned user and update the state.
                 setUser(response.data);
 
-                console.log(user);
+                console.log("------------tokenId------------");
+                console.log(localStorage.getItem("id"));
+                console.log(typeof localStorage.getItem("id"));
 
                 // This is just some data for you to see what is available.
                 // Feel free to remove it.
@@ -63,11 +65,13 @@ const UserProfile = () => {
                     <div className="profile item">{user.status}</div>
                     <div className="profile item">{user.creationDate}</div>
                     <div className="profile item">{user.birthday}</div>
+                    <div className="profile item">{user.id}</div>
                 </ul>
                 <Button
-                    width="100%"
-                >
-                    Confirm Edits
+                    disabled={user.id !== parseInt(localStorage.getItem("id"))}
+                    width = "100%"
+                    >
+                    Edit
                 </Button>
             </div>
         );
