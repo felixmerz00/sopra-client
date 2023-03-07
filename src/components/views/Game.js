@@ -33,7 +33,13 @@ const Game = () => {
   const [users, setUsers] = useState(null);
 
   const logout = () => {
+      async function setUserOffline(){
+          const url = "user-logouts/" + localStorage.getItem("id");
+          await api.put(url);
+      }
+      setUserOffline();
     localStorage.removeItem('token');
+    localStorage.removeItem('id');
     history.push('/login');
   }
 
