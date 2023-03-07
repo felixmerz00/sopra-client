@@ -3,9 +3,27 @@ import {api, handleError} from 'helpers/api';
 import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/UserProfile.scss";
 import {Button} from "../ui/Button";
+import User from 'models/User';
+import {useHistory} from "react-router-dom";
 
+const FormField = props => {
+    return (
+        <div className="profile field">
+            <label className="profile label">
+                {props.label}
+            </label>
+            <input
+                className="profile input"
+                placeholder="enter here.."
+                value={props.value}
+                onChange={e => props.onChange(e.target.value)}
+            />
+        </div>
+    );
+};
 
 const UserProfile = () => {
+    const history = useHistory();
 
     // define a state variable (using the state hook).
     // if this variable changes, the component will re-render, but the variable will
@@ -13,6 +31,24 @@ const UserProfile = () => {
     // a component can have as many state variables as you like.
     // more information can be found under https://reactjs.org/docs/hooks-state.html
     const [user, setUser] = useState(null);
+
+    const [newUsername, setNewUsername] = useState(null);
+    const [newBirthday, setBirthday] = useState(null);
+    const [editField, setEditField] = useState([]);
+
+    const handleEditFieldAdd = () => {
+        setEditField([{field: ""}])
+    }
+
+    const doEdit = async () => {
+        console.log("------------line 44 reached----------");
+        console.log(localStorage.getItem("id"));
+        const requestBody = JSON.stringify({username: newUsername, birthday: newBirthday});
+        console.log(requestBody);
+        const url = "/users/" + localStorage.getItem("id");
+        await api.put(url, requestBody);
+        history.push('/game');
+    }
 
     // the effect hook can be used to react to change in your component.
     // in this case, the effect hook is only run once, the first time the component is mounted
@@ -30,10 +66,6 @@ const UserProfile = () => {
 
                 // Get the returned user and update the state.
                 setUser(response.data);
-
-                console.log("------------tokenId------------");
-                console.log(localStorage.getItem("id"));
-                console.log(typeof localStorage.getItem("id"));
 
                 // This is just some data for you to see what is available.
                 // Feel free to remove it.
@@ -61,18 +93,39 @@ const UserProfile = () => {
         content = (
             <div className="profile">
                 <ul className="profile item-list">
-                    <div className="profile item">{user.username}</div>
-                    <div className="profile item">{user.status}</div>
-                    <div className="profile item">{user.creationDate}</div>
-                    <div className="profile item">{user.birthday}</div>
-                    <div className="profile item">{user.id}</div>
+                    <div className="profile item">username: {user.username}</div>
+                    <div className="profile item">status: {user.status}</div>
+                    <div className="profile item">creation date: {user.creationDate}</div>
+                    <div className="profile item">birthday: {user.birthday}</div>
                 </ul>
                 <Button
                     disabled={user.id !== parseInt(localStorage.getItem("id"))}
                     width = "100%"
+                    onClick = {handleEditFieldAdd}
                     >
                     Edit
                 </Button>
+                {editField.map(() => (
+                    <div>
+                        <FormField
+                            label="new username"
+                            value={newUsername}
+                            onChange={un => setNewUsername(un)}
+                        />
+                        <FormField
+                            label="new birthday"
+                            value={newBirthday}
+                            onChange={b => setBirthday(b)}
+                        />
+                        <Button
+                            width = "100%"
+                            onClick={() => doEdit()}
+                        >
+                            Confirm Edit
+                        </Button>
+                    </div>
+                ))}
+
             </div>
         );
     }
