@@ -3,7 +3,6 @@ import {api, handleError} from 'helpers/api';
 import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/UserProfile.scss";
 import {Button} from "../ui/Button";
-import User from 'models/User';
 import {useHistory} from "react-router-dom";
 
 const FormField = props => {
