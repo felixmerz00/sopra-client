@@ -64,12 +64,10 @@ const Login = props => {
 
   const doLogin = async () => {
     try {
-      // TODO Change the name to password.
       const requestBody = JSON.stringify({username, password: password});
       const response = await api.post('/user-logins', requestBody);
 
       // Get the returned user and update a new object.
-        // TODO Why is it creating a new user here? What is this UserProfile.js class?
       const user = new User(response.data);
 
       // Store the token into the local storage.
