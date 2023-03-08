@@ -12,7 +12,6 @@ const Player = ({user}) => (
     <div className="player username">
         <Link to={`/profile/${user.id}`}>{user.username}</Link>
     </div>
-    <div className="player name">{user.password}</div>
     <div className="player id">id: {user.id}</div>
   </div>
 );
