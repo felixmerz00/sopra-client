@@ -32,7 +32,7 @@ const AppRouter = () => {
           </LoginGuard>
         </Route>
         <Route exact path="/">
-          <Redirect to="/game"/>
+          <Redirect to="/login"/>
         </Route>
         <Route exact path="/register">
           <RegistrationGuard>
