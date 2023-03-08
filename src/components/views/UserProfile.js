@@ -46,7 +46,7 @@ const UserProfile = () => {
         console.log(requestBody);
         const url = "/users/" + localStorage.getItem("id");
         await api.put(url, requestBody);
-        history.push('/game');
+        window.location.reload();
     }
 
     // the effect hook can be used to react to change in your component.
