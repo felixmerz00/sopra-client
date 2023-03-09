@@ -78,6 +78,7 @@ const Registration = props => {
             history.push(`/game`);
         } catch (error) {
             alert(`Something went wrong during the registration: \n${handleError(error)}`);
+            window.location.reload();
         }
     };
 
