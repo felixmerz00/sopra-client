@@ -3,7 +3,6 @@ import {api, handleError} from 'helpers/api';
 import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/UserProfile.scss";
 import {Button} from "../ui/Button";
-import {useHistory} from "react-router-dom";
 
 const FormField = props => {
     return (
@@ -22,7 +21,6 @@ const FormField = props => {
 };
 
 const UserProfile = () => {
-    const history = useHistory();
 
     // define a state variable (using the state hook).
     // if this variable changes, the component will re-render, but the variable will
