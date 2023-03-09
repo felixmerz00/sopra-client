@@ -38,8 +38,6 @@ const UserProfile = () => {
     }
 
     const doEdit = async () => {
-        console.log("------------line 44 reached----------");
-        console.log(localStorage.getItem("id"));
         const requestBody = JSON.stringify({username: newUsername, birthday: newBirthday});
         console.log(requestBody);
         const url = "/users/" + localStorage.getItem("id");
