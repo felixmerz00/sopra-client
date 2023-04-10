@@ -1,116 +1,133 @@
-import React, {useState} from 'react';
-import {api, handleError} from 'helpers/api';
-import User from 'models/User';
-import {useHistory} from 'react-router-dom';
-import {Button} from 'components/ui/Button';
+import {Fragment, useState, useRef, useEffect} from 'react';
 import 'styles/views/Login.scss';
-import BaseContainer from "components/ui/BaseContainer";
-import PropTypes from "prop-types";
+import 'styles/views/Chat.css';
+import {Box, Divider, Typography, ListItemText, Container, Paper, Grid, List, ListItem, FormControl, TextField, IconButton} from "@mui/material";
+import SendIcon from '@mui/icons-material/Send';
+import {ChatMessageDTO} from "../../models/ChatMessageDTO";
 
-/*
-It is possible to add multiple components inside a single file,
-however be sure not to clutter your files with an endless amount!
-As a rule of thumb, use one file per component and only add small,
-specific components that belong to the main one in the same file.
- */
-const FormField = props => {
-  return (
-    <div className="login field">
-      <label className="login label">
-        {props.label}
-      </label>
-      <input
-        className="login input"
-        placeholder="enter here.."
-        value={props.value}
-        onChange={e => props.onChange(e.target.value)}
-      />
-    </div>
-  );
-};
 
-const PasswordField = props => {
-  return (
-      <div className="registration field">
-        <label className="registration label">
-          {props.label}
-        </label>
-        <input type={"password"}
-               className="registration input"
-               placeholder="enter here.."
-               value={props.value}
-               onChange={e => props.onChange(e.target.value)}
-        />
-      </div>
-  );
-};
+export default function Login()  {
 
-FormField.propTypes = {
-  label: PropTypes.string,
-  value: PropTypes.string,
-  onChange: PropTypes.func
-};
 
-PasswordField.propTypes = {
-  label: PropTypes.string,
-  value: PropTypes.string,
-  onChange: PropTypes.func
-};
+  const ENTER_KEY_CODE = 13;
 
-const Login = props => {
-  const history = useHistory();
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
+  const scrollBottomRef = useRef(null);
+  const webSocket = useRef(null);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [user, setUser] = useState('');
+  const [message, setMessage] = useState('');
 
-  const doLogin = async () => {
-    try {
-      const requestBody = JSON.stringify({username, password: password});
-      const response = await api.post('/user-logins', requestBody);
+  useEffect(() => {
+    console.log('Opening WebSocket');
+    webSocket.current = new WebSocket('ws://localhost:8080/login');
+    const openWebSocket = () => {
+      webSocket.current.onopen = (event) => {
+        console.log('Open:', event);
+      }
+      webSocket.current.onclose = (event) => {
+        console.log('Close:', event);
+      }
+    }
+    openWebSocket();
+    return () => {
+      console.log('Closing WebSocket');
+      webSocket.current.close();
+    }
+  }, []);
 
-      // Get the returned user and update a new object.
-      const user = new User(response.data);
+  useEffect(() => {
+    webSocket.current.onmessage = (event) => {
+      const ChatMessageDTO = JSON.parse(event.data);
+      console.log('Message:', ChatMessageDTO);
+      setChatMessages([...chatMessages, {
+        user: ChatMessageDTO.user,
+        message: ChatMessageDTO.message
+      }]);
+      if(scrollBottomRef.current) {
+        scrollBottomRef.current.scrollIntoView({ behavior: 'smooth'});
+      }
+    }
+  }, [chatMessages]);
 
-      // Store the token into the local storage.
-      localStorage.setItem('token', user.token);
-      localStorage.setItem('id', user.id);
+  const handleUserChange = (event) => {
+    setUser(event.target.value);
+  }
 
-      // Login successfully worked --> navigate to the route /game in the GameRouter
-      history.push(`/game`);
-    } catch (error) {
-      alert(`Something went wrong during the login: \n${handleError(error)}`);
+  const handleMessageChange = (event) => {
+    setMessage(event.target.value);
+  }
+
+  const handleEnterKey = (event) => {
+    if(event.keyCode === ENTER_KEY_CODE){
+      sendMessage();
+    }
+  }
+
+  const sendMessage = () => {
+    if(user && message) {
+      console.log('Send!');
+      webSocket.current.send(
+          JSON.stringify(new ChatMessageDTO(user, message))
+      );
+      // Clear input after sending the message
+      setMessage('');
     }
   };
 
+  const listChatMessages = chatMessages.map((ChatMessageDTO, index) =>
+      <ListItem key={index}>
+        <ListItemText primary={`${ChatMessageDTO.user}: ${ChatMessageDTO.message}`}/>
+      </ListItem>
+  );
+
+
   return (
-    <BaseContainer>
-      <div className="login container">
-        <div className="login form">
-          <h2 className="login header">
-            Login
-          </h2>
-          <FormField
-            label="Username"
-            value={username}
-            onChange={un => setUsername(un)}
-          />
-          <PasswordField
-            label="Password"
-            value={password}
-            onChange={n => setPassword(n)}
-          />
-          <div className="login button-container">
-            <Button
-              disabled={!username || !password}
-              width="100%"
-              onClick={() => doLogin()}
-            >
-              Login
-            </Button>
-          </div>
-          <a href="/register">Register</a>
-        </div>
-      </div>
-    </BaseContainer>
+        <Box sx={{display: 'flex', flexDirection: 'column', width: '100%'}}>
+          <Fragment>
+            <Container>
+              <Paper elevation={5} >
+                <Box p={5}>
+                  <Typography variant="h6" gutterBottom>
+                    Happy chatting!
+                  </Typography>
+                  <Divider />
+                  <Grid container spacing={4} alignItems="center">
+                    <Grid id="chat-window" xs={12} item>
+                      <List id="chat-window-messages">
+                        {listChatMessages}
+                        <ListItem ref={scrollBottomRef}></ListItem>
+                      </List>
+                    </Grid>
+                    <Grid xs={2} item>
+                      <FormControl fullWidth>
+                        <TextField onChange={handleUserChange}
+                                   value={user}
+                                   label="Nickname"
+                                   variant="outlined"/>
+                      </FormControl>
+                    </Grid>
+                    <Grid xs={9} item>
+                      <FormControl fullWidth>
+                        <TextField onChange={handleMessageChange} onKeyDown={handleEnterKey}
+                                   value={message}
+                                   label="Type your message..."
+                                   variant="outlined"/>
+                      </FormControl>
+                    </Grid>
+                    <Grid xs={1} item>
+                      <IconButton onClick={sendMessage}
+                                  aria-label="send"
+                                  color="primary">
+                        <SendIcon />
+                      </IconButton>
+                    </Grid>
+
+                  </Grid>
+                </Box>
+              </Paper>
+            </Container>
+          </Fragment>
+        </Box>
   );
 };
 
@@ -118,4 +135,4 @@ const Login = props => {
  * You can get access to the history object's properties via the withRouter.
  * withRouter will pass updated match, location, and history props to the wrapped component whenever it renders.
  */
-export default Login;
+// export default Login;
