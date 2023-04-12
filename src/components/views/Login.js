@@ -19,7 +19,7 @@ export default function Login()  {
 
   useEffect(() => {
     console.log('Opening WebSocket');
-    webSocket.current = new WebSocket('ws://localhost:8080/login');
+    webSocket.current = new WebSocket('ws://localhost:8080/chat');
     const openWebSocket = () => {
       webSocket.current.onopen = (event) => {
         console.log('Open:', event);

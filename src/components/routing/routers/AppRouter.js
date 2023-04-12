@@ -7,6 +7,7 @@ import {RegistrationGuard} from "../routeProtectors/RegisterationGuard";
 import Registration from "../../views/Registration";
 import {ProfileGuard} from "../routeProtectors/ProfileGuard";
 import UserProfile from "../../views/UserProfile";
+import ChatWebSocket from "../../views/Websocket";
 
 /**
  * Main router of your application.
@@ -21,6 +22,9 @@ const AppRouter = () => {
   return (
     <BrowserRouter>
       <Switch>
+        <Route path="/chat">
+          <ChatWebSocket base="/chat"/>
+        </Route>
         <Route path="/game">
           <GameGuard>
             <GameRouter base="/game"/>
