@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 
-export default function ChatWebSocket(){
+export default function WebSocket(){
     const [stompClient, setStompClient] = useState(null);
     const [connected, setConnected] = useState(false);
     const [from, setFrom] = useState('');
@@ -94,4 +94,4 @@ export default function ChatWebSocket(){
     );
 };
 
-// export default ChatWebSocket;
+// export default WebSocket;

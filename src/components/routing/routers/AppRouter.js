@@ -7,10 +7,10 @@ import {RegistrationGuard} from "../routeProtectors/RegisterationGuard";
 import Registration from "../../views/Registration";
 import {ProfileGuard} from "../routeProtectors/ProfileGuard";
 import UserProfile from "../../views/UserProfile";
-import ChatWebSocket from "../../views/Websocket";
 import WebSocket2 from "../../views/WebSocket2";
 import Socket from "../../views/Socket";
 import WebSocket3 from "../../views/WebSocket3";
+import WebSocket from "../../views/Websocket";
 
 /**
  * Main router of your application.
@@ -35,7 +35,7 @@ const AppRouter = () => {
           <WebSocket2 base="/chat2"/>
         </Route>
         <Route path="/chat">
-          <ChatWebSocket base="/chat"/>
+          <WebSocket base="/chat"/>
         </Route>
         <Route path="/game">
           <GameGuard>

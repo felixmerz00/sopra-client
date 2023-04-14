@@ -14,7 +14,7 @@ export const GameGuard = props => {
   if (localStorage.getItem("token")) {
     return props.children;
   }
-  return <Redirect to="/chat3"/>;
+  return <Redirect to="/chat"/>;
 };
 
 GameGuard.propTypes = {
