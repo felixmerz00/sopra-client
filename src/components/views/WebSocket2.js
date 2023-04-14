@@ -72,5 +72,4 @@ const WebSocket2 = () => {
         </div>
     );
 };
-
 export default WebSocket2;
