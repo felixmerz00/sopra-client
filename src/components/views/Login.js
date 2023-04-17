@@ -1,121 +1,126 @@
-import React, {useState} from 'react';
-import {api, handleError} from 'helpers/api';
-import User from 'models/User';
-import {useHistory} from 'react-router-dom';
-import {Button} from 'components/ui/Button';
-import 'styles/views/Login.scss';
-import BaseContainer from "components/ui/BaseContainer";
-import PropTypes from "prop-types";
+import { Container, Divider, FormControl, Grid, IconButton, List, ListItem, ListItemText, Paper, TextField, Typography } from "@mui/material";
+import { Box } from "@mui/system";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { ChatMessageDTO } from "models/ChatMessageDTO";
+import 'styles/views/Chat.scss';
+import SendIcon from '@mui/icons-material/Send';
 
-/*
-It is possible to add multiple components inside a single file,
-however be sure not to clutter your files with an endless amount!
-As a rule of thumb, use one file per component and only add small,
-specific components that belong to the main one in the same file.
- */
-const FormField = props => {
-  return (
-    <div className="login field">
-      <label className="login label">
-        {props.label}
-      </label>
-      <input
-        className="login input"
-        placeholder="enter here.."
-        value={props.value}
-        onChange={e => props.onChange(e.target.value)}
-      />
-    </div>
-  );
-};
+export default function Chat(){
 
-const PasswordField = props => {
-  return (
-      <div className="registration field">
-        <label className="registration label">
-          {props.label}
-        </label>
-        <input type={"password"}
-               className="registration input"
-               placeholder="enter here.."
-               value={props.value}
-               onChange={e => props.onChange(e.target.value)}
-        />
-      </div>
-  );
-};
+    const ENTER_KEY_CODE = 13;
 
-FormField.propTypes = {
-  label: PropTypes.string,
-  value: PropTypes.string,
-  onChange: PropTypes.func
-};
+    const scrollBottomRef = useRef(null);
+    const webSocket = useRef(null);
+    const [chatMessages, setChatMessages] = useState([]);
+    const [user, setUser] = useState('');
+    const [message, setMessage] = useState('');
 
-PasswordField.propTypes = {
-  label: PropTypes.string,
-  value: PropTypes.string,
-  onChange: PropTypes.func
-};
+    useEffect(() => {
+        console.log('Opening WebSocket');
+        webSocket.current = new WebSocket('ws://localhost:8080/chat');
+        const openWebSocket = () => {
+            webSocket.current.onopen = (event) => {
+                console.log('Open:', event);
+            }
+            webSocket.current.onclose = (event) => {
+                console.log('Close:', event);
+            }
+        }
+        openWebSocket();
+        return () => {
+            console.log('Closing WebSocket');
+            webSocket.current.close();
+        }
+    }, []);
 
-const Login = props => {
-  const history = useHistory();
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
+    useEffect(() => {
+        webSocket.current.onmessage = (event) => {
+            const ChatMessageDTO = JSON.parse(event.data);
+            console.log('Message:', ChatMessageDTO);
+            setChatMessages([...chatMessages, {
+                user: ChatMessageDTO.user,
+                message: ChatMessageDTO.message
+            }]);
+            if(scrollBottomRef.current) {
+                scrollBottomRef.current.scrollIntoView({ behavior: 'smooth'});
+            }
+        }
+    }, [chatMessages]);
 
-  const doLogin = async () => {
-    try {
-      const requestBody = JSON.stringify({username, password: password});
-      const response = await api.post('/user-logins', requestBody);
-
-      // Get the returned user and update a new object.
-      const user = new User(response.data);
-
-      // Store the token into the local storage.
-      localStorage.setItem('token', user.token);
-      localStorage.setItem('id', user.id);
-
-      // Login successfully worked --> navigate to the route /game in the GameRouter
-      history.push(`/game`);
-    } catch (error) {
-      alert(`Something went wrong during the login: \n${handleError(error)}`);
+    const handleUserChange = (event) => {
+        setUser(event.target.value);
     }
-  };
 
-  return (
-    <BaseContainer>
-      <div className="login container">
-        <div className="login form">
-          <h2 className="login header">
-            Login
-          </h2>
-          <FormField
-            label="Username"
-            value={username}
-            onChange={un => setUsername(un)}
-          />
-          <PasswordField
-            label="Password"
-            value={password}
-            onChange={n => setPassword(n)}
-          />
-          <div className="login button-container">
-            <Button
-              disabled={!username || !password}
-              width="100%"
-              onClick={() => doLogin()}
-            >
-              Login
-            </Button>
-          </div>
-          <a href="/register">Register</a>
-        </div>
-      </div>
-    </BaseContainer>
-  );
-};
+    const handleMessageChange = (event) => {
+        setMessage(event.target.value);
+    }
 
-/**
- * You can get access to the history object's properties via the withRouter.
- * withRouter will pass updated match, location, and history props to the wrapped component whenever it renders.
- */
-export default Login;
+    const handleEnterKey = (event) => {
+        if(event.keyCode === ENTER_KEY_CODE){
+            sendMessage();
+        }
+    }
+
+    const sendMessage = () => {
+        if(user && message) {
+            console.log('Send!');
+            webSocket.current.send(
+                JSON.stringify(new ChatMessageDTO(user, message))
+            );
+            setMessage('');
+        }
+    };
+
+    const listChatMessages = chatMessages.map((ChatMessageDTO, index) => 
+        <ListItem key={index}>
+            <ListItemText primary={`${ChatMessageDTO.user}: ${ChatMessageDTO.message}`}/>
+        </ListItem>
+    );
+
+    return (
+        <Fragment>
+            <Container>
+                <Paper elevation={5}>
+                    <Box p={3}>
+                        <Typography variant="h4" gutterBottom>
+                            Happy chatting!
+                        </Typography>
+                        <Divider />
+                        <Grid container spacing={4} alignItems="center">
+                            <Grid id="chat-window" xs={12} item>
+                                <List id="chat-window-messages">
+                                    {listChatMessages}
+                                    <ListItem ref={scrollBottomRef}></ListItem>
+                                </List>
+                            </Grid>
+                            <Grid xs={2} item>
+                                <FormControl fullWidth>
+                                    <TextField onChange={handleUserChange}
+                                        value={user}
+                                        label="Nickname"
+                                        variant="outlined"/>
+                                </FormControl>
+                            </Grid>
+                            <Grid xs={9} item>
+                                <FormControl fullWidth>
+                                    <TextField onChange={handleMessageChange} onKeyDown={handleEnterKey}
+                                        value={message}
+                                        label="Type your message..."
+                                        variant="outlined"/>
+                                </FormControl>
+                            </Grid>
+                            <Grid xs={1} item>
+                                <IconButton onClick={sendMessage}
+                                    aria-label="send"
+                                    color="primary">
+                                        <SendIcon />
+                                </IconButton>
+                            </Grid>
+                            
+                        </Grid>
+                    </Box>
+                </Paper>
+            </Container>
+        </Fragment>
+    );
+}
