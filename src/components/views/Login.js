@@ -17,7 +17,7 @@ export default function Chat(){
 
     useEffect(() => {
         console.log('Opening WebSocket');
-        webSocket.current = new WebSocket('wss://localhost:8080/chat');
+        webSocket.current = new WebSocket('wss://sopra-fs23-merz-felix-server.oa.r.appspot.com/chat');
         const openWebSocket = () => {
             webSocket.current.onopen = (event) => {
                 console.log('Open:', event);
